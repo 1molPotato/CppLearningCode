@@ -17,7 +17,7 @@ public:
 	int ReturnVal() { return nVal; }
 	// 在此处补充你的代码
 	MyInt & operator -(const int & n) {
-    //重载-号运算符
+	//重载-号运算符
 		nVal -= n;
 		return *this;
 	}
