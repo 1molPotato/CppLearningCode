@@ -28,26 +28,33 @@ using namespace std;
 // 在此处补充你的代码
 class Array2 {
 private:
-	int array[100][100] = {};//内部数据为整型二维数组
+	int* praw[1000];//int*类型的指针数组存放行指针
 public:
 	//函数原型声明
 	Array2();//无参构造函数
 	Array2(int raw, int col);//构造函数
+	~Array2();//析构函数
 	int* operator [](int index_raw);//重载[]运算符,返回第index_raw行的整型数组指针
 	int operator()(int index_raw, int index_col);//重载()运算符,返回整型数
+	
 };
 
 Array2::Array2() {
 
 }
 Array2::Array2(int raw, int col) {
-	
+	for(int i = 0; i < raw; i++) {
+		praw[i] = new int[col];
+	}
+}
+Array2::~Array2() {
+	delete praw;//释放动态分配的内存空间
 }
 int* Array2::operator[](int index_raw) {
-	return array[index_raw];
+	return praw[index_raw];
 }
 int Array2::operator()(int index_raw, int index_col) {
-	return array[index_raw][index_col];
+	return praw[index_raw][index_col];
 }
 
 int main() {
