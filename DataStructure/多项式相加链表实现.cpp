@@ -50,8 +50,6 @@
 
 #include <iostream>
 using namespace std;
-#include <iostream>
-using namespace std;
 
 struct LinkNode {
 	//双向链表的单个节点，用结构体定义
@@ -60,6 +58,7 @@ struct LinkNode {
 	LinkNode *prev;
 	LinkNode *next;
 };
+
 class LinkPolynomial {
 private:
 	LinkNode *head;
