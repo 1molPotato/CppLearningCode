@@ -72,7 +72,7 @@ public:
 	void TryInsert(LinkNode *p_);//尝试将p_按降幂插入多项式
 	void Initialize();//初始化多项式
 	friend ostream &operator << (ostream &output, const LinkPolynomial &formula);//重载流输出运算符，需要重载为非类成员函数，并且为类的友元
-	LinkPolynomial &operator+(const LinkPolynomial &formula);//重载加法运算符，定义两个多项式相加
+	LinkPolynomial operator+(const LinkPolynomial &formula);//重载加法运算符，定义两个多项式相加
 };
 
 LinkPolynomial::LinkPolynomial() {
@@ -177,42 +177,41 @@ ostream &operator << (ostream &output, const LinkPolynomial &formula) {
 	return output;
 }
 
-LinkPolynomial &LinkPolynomial::operator+(const LinkPolynomial &formula) {
+LinkPolynomial LinkPolynomial::operator+(const LinkPolynomial &formula) {
 	
 	LinkPolynomial *sum = new LinkPolynomial;
 	LinkNode *p1 = head;
 	LinkNode *p2 = formula.head;//私有成员变量可以直接调用吗...
-	while(p1 || p2) {
+	while(p1 && p2) {
 		//p1和p2都为空时循环终止
-		if(NULL != p1 && NULL != p2) {
-			if(p1->power == p2->power) {
-				//幂次相等的项系数相加
-				LinkNode *p = AddNewNode(p1->coefficent + p2->coefficent, p1->power);
-				sum->Insert(p);
-				p1 = p1->next;
-				p2 = p2->next;
-			}
-			else if(p1->power > p2->power) {
-				LinkNode *p = AddNewNode(p1->coefficent, p1->power);
-				sum->Insert(p);
-				p1 = p1->next;
-			}
-			else {
-				LinkNode *p = AddNewNode(p2->coefficent, p2->power);
-				sum->Insert(p);
-				p2 = p2->next;
-			}
+
+		if(p1->power == p2->power) {
+			//幂次相等的项系数相加
+			LinkNode *p = AddNewNode(p1->coefficent + p2->coefficent, p1->power);
+			sum->Insert(p);
+			p1 = p1->next;
+			p2 = p2->next;
 		}
-		else if(p1 != NULL) {
+		else if(p1->power > p2->power) {
 			LinkNode *p = AddNewNode(p1->coefficent, p1->power);
 			sum->Insert(p);
 			p1 = p1->next;
 		}
-		else if(p2 != NULL){
+		else {
 			LinkNode *p = AddNewNode(p2->coefficent, p2->power);
 			sum->Insert(p);
 			p2 = p2->next;
 		}
+	}
+	while(p1){
+		LinkNode *p = AddNewNode(p1->coefficent, p1->power);
+		sum->Insert(p);
+		p1 = p1->next;
+	}
+	while(p2){
+		LinkNode *p = AddNewNode(p2->coefficent, p2->power);
+		sum->Insert(p);
+		p2 = p2->next;
 	}
 	return *sum;//返回类型应该是LinkPolynomial的引用
 	
