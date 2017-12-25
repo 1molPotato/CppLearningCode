@@ -186,6 +186,7 @@ int Headquarter::Produce(int nTime) {
 		searchingTimes++;//每循环一次表示搜索次数增加一次，遍历完WARRIOR_NUM种武士即终止循环
 	}
 	int kindNo = makingSeq[color][curMakingSeqIdx];//确定将要制造的武士种类
+	curMakingSeqIdx = (curMakingSeqIdx + 1) % WARRIOR_NUM;//下次应制造下一种武士
 	if(Warrior::initialLifeValue[kindNo] > totalLifeValue) {
 		stopped = true;//若司令部生命元仍不够，则说明已无法制造任何武士
 		cout << setw(3) << setfill('0') << nTime << ' ' << GetColor()
