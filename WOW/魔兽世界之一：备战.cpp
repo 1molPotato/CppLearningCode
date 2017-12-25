@@ -82,8 +82,6 @@ Case:1
 003 red headquarter stops making warriors
 003 blue iceman 4 born with strength 5,1 iceman in blue headquarter
 004 blue headquarter stops making warriors
-How to submit
-When you're ready to submit, you can upload files for each part of the assignment on the "My submission" tab.
 
 还是不能熟练地处理类之间的关系，自己写到一半就进行不下去了，最后贴上郭老师的源码，骗自己认真读懂代码也算自己会吧...
 */
