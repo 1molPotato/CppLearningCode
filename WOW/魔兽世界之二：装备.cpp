@@ -184,7 +184,7 @@ private:
 	int color;//红方司令部或者蓝方司令部
 	int curMakingSeqIdx; //当前要制造的武士是制造序列中的第几个  
 	int warriorNum[WARRIOR_NUM]; //当前司令部已经制造的每种武士的数目  
-	Warrior * pWarriors[1000];//指向Warrior对象的指针数组，使司令部和制造的武士之间产生了关联
+	Warrior * pWarriors[1000];//用基类的指针数组存放派生类对象的指针
 public:
 	friend class Warrior;//声明Warrior类为Headquarter的友元，使得Warrior的成员函数可以访问Headquarter的私有成员
 	friend class Dragon;//派生类仍需要声明为友元??
