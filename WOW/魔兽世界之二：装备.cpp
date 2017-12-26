@@ -137,6 +137,10 @@ It has a bomb
 稍后去看看大神的代码，我先猜测一波用多态的概念应该可以优化代码
 */
 
+/*
+用了多态瞬间舒服了，而且终于在POJ上AC，贼开心，改大神的代码果然就是幸福啊
+*/
+
 #include <iostream>  
 #include <cstdio>  
 #include <string>  
@@ -163,18 +167,14 @@ private:
 protected:
 	Headquarter * pHeadquarter;//声明为保护成员，才能被派生类访问
 public:
-	enum WARRIOR {};//能否用枚举代替
 	static string names[WARRIOR_NUM];//静态成员变量，储存各类武士的名称
 	static string weapons[WEAPON_NUM];//静态成员变量，储存各类武器的名称
 	static int initialLifeValue[WARRIOR_NUM];//静态成员变量，储存各类武士的初始生命值
 	Warrior(Headquarter * p, int no_, int kindNo_);//构造函数
 	void PrintResult(int nTime);
+	void virtual PrintSelf(int nTime) {};
 };
-class Dragon;//事先声明类才可以在Headquarter类中使用
-class Ninja;
-class Iceman;
-class Lion;
-class Wolf;
+
 class Headquarter
 {
 private:
@@ -184,12 +184,7 @@ private:
 	int color;//红方司令部或者蓝方司令部
 	int curMakingSeqIdx; //当前要制造的武士是制造序列中的第几个  
 	int warriorNum[WARRIOR_NUM]; //当前司令部已经制造的每种武士的数目  
-	//Warrior * pWarriors[1000];//指向Warrior对象的指针数组，使司令部和制造的武士之间产生了关联
-	Dragon * pDragons[1000];
-	Ninja * pNinjas[1000];
-	Iceman * pIcemen[1000];
-	Lion * pLions[1000];
-	Wolf * pWolves[1000];
+	Warrior * pWarriors[1000];//指向Warrior对象的指针数组，使司令部和制造的武士之间产生了关联
 public:
 	friend class Warrior;//声明Warrior类为Headquarter的友元，使得Warrior的成员函数可以访问Headquarter的私有成员
 	friend class Dragon;//派生类仍需要声明为友元??
@@ -199,7 +194,6 @@ public:
 	~Headquarter();//析构函数
 	int Produce(int nTime);
 	string GetColor();
-
 };
 
 /*
@@ -214,9 +208,9 @@ public:
 		weaponNo = no_ % 3;
 		morale = (float)pHeadquarter->totalLifeValue / initialLifeValue[kindNo_];
 	}
-	void PrintResult(int nTime) {
+	void PrintSelf(int nTime) {
 		Warrior::PrintResult(nTime);//先调用基类的输出函数
-		cout << "It has a " << weapons[weaponNo] << ", and it's morale is " 
+		cout << "It has a " << weapons[weaponNo] << ",and it's morale is " 
 			<< fixed << setprecision(2) << morale << endl;
 	}
 };
@@ -229,7 +223,7 @@ public:
 		weapon1No = no_ % 3;
 		weapon2No = (no_ + 1) % 3;
 	}
-	void PrintResult(int nTime) {
+	void PrintSelf(int nTime) {
 		Warrior::PrintResult(nTime);//先调用基类的输出函数
 		cout << "It has a " << weapons[weapon1No] << " and a " << weapons[weapon2No] << endl;
 	}
@@ -241,7 +235,7 @@ public:
 	Iceman(Headquarter * p, int no_, int kindNo_) :Warrior(p, no_, kindNo_) {
 		weaponNo = no_ % 3;
 	}
-	void PrintResult(int nTime) {
+	void PrintSelf(int nTime) {
 		Warrior::PrintResult(nTime);//先调用基类的输出函数
 		cout << "It has a " << weapons[weaponNo] << endl;
 	}
@@ -253,7 +247,7 @@ public:
 	Lion(Headquarter * p, int no_, int kindNo_) :Warrior(p, no_, kindNo_) {
 		loyalty = pHeadquarter->totalLifeValue;
 	}
-	void PrintResult(int nTime) {
+	void PrintSelf(int nTime) {
 		Warrior::PrintResult(nTime);//先调用基类的输出函数
 		cout << "It's loyalty is " << loyalty << endl;
 	}
@@ -262,6 +256,9 @@ class Wolf :public Warrior {
 public:
 	Wolf(Headquarter * p, int no_, int kindNo_) :Warrior(p, no_, kindNo_) {
 		//Wolf类与基类完全相同
+	}
+	void PrintSelf(int nTime) {
+		Warrior::PrintResult(nTime);//先调用基类的输出函数
 	}
 };
 
@@ -299,16 +296,8 @@ void Headquarter::Init(int color_, int lv) {
 }
 
 Headquarter::~Headquarter() {
-	for(int i = 0; i < warriorNum[0]; i++)
-		delete pDragons[i];//释放内存
-	for(int i = 0; i < warriorNum[1]; i++)
-		delete pNinjas[i];//释放内存
-	for(int i = 0; i < warriorNum[2]; i++)
-		delete pIcemen[i];//释放内存
-	for(int i = 0; i < warriorNum[3]; i++)
-		delete pLions[i];//释放内存
-	for(int i = 0; i < warriorNum[4]; i++)
-		delete pWolves[i];//释放内存
+	for(int i = 0; i < totalWarriorNum; i++)
+		delete pWarriors[i];//释放内存
 }
 
 int Headquarter::Produce(int nTime) {
@@ -331,36 +320,25 @@ int Headquarter::Produce(int nTime) {
 	}
 	//制造武士
 	totalLifeValue -= Warrior::initialLifeValue[kindNo];//司令部生命元相应减少
-	if(0 == kindNo) {
-		pDragons[warriorNum[kindNo]] = new Dragon(this, totalWarriorNum + 1, kindNo);//制造一个Dragon
-		pDragons[warriorNum[kindNo]++]->PrintResult(nTime);
-	}		
-	else if(1 == kindNo){
-		pNinjas[warriorNum[kindNo]] = new Ninja(this, totalWarriorNum + 1, kindNo);//制造一个Ninja
-		pNinjas[warriorNum[kindNo]++]->PrintResult(nTime);
-	}
-	else if(2 == kindNo) {
-		pIcemen[warriorNum[kindNo]] = new Iceman(this, totalWarriorNum + 1, kindNo);
-		pIcemen[warriorNum[kindNo]++]->PrintResult(nTime);
-	}
-	else if(3 == kindNo) {
-		pLions[warriorNum[kindNo]] = new Lion(this, totalWarriorNum + 1, kindNo);
-		pLions[warriorNum[kindNo]++]->PrintResult(nTime);
-	}
-	else {
-		pWolves[warriorNum[kindNo]] = new Wolf(this, totalWarriorNum + 1, kindNo);		
-		pWolves[warriorNum[kindNo]++]->PrintResult(nTime);
-	}
-	//warriorNum[kindNo]++;//司令部中该类武士的数量增加1
+	if(0 == kindNo) 
+		pWarriors[totalWarriorNum] = new Dragon(this, totalWarriorNum + 1, kindNo);//制造一个Dragon
+	else if(1 == kindNo)
+		pWarriors[totalWarriorNum] = new Ninja(this, totalWarriorNum + 1, kindNo);//制造一个Ninja
+	else if(2 == kindNo) 
+		pWarriors[totalWarriorNum] = new Iceman(this, totalWarriorNum + 1, kindNo);//制造一个Iceman
+	else if(3 == kindNo) 
+		pWarriors[totalWarriorNum] = new Lion(this, totalWarriorNum + 1, kindNo);//制造一个Lion
+	else 
+		pWarriors[totalWarriorNum] = new Wolf(this, totalWarriorNum + 1, kindNo);//制造一个Wolf
+	warriorNum[kindNo]++;//司令部中该类武士的数量增加1
+	pWarriors[totalWarriorNum]->PrintSelf(nTime);
 	totalWarriorNum++;
 	return 1;
 }
-
 string Headquarter::GetColor() {
 	//返回对应颜色的字符串
 	return 0 == color?"red":"blue";
 }
-
 
 /*
 类静态成员变量的初始化
@@ -397,3 +375,4 @@ int main()
 	}
 	return 0;
 }
+
