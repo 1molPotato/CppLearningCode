@@ -141,6 +141,11 @@ It has a bomb
 用了多态瞬间舒服了，而且终于在POJ上AC，贼开心，改大神的代码果然就是幸福啊
 */
 
+/*
+基类的虚函数不为纯虚函数时，派生类重载虚函数时可以先调用基类虚函数的功能，再实现自身特有的功能
+派生类不对虚函数重载，则默认调用基类的虚函数
+*/
+
 #include <iostream>  
 #include <cstdio>  
 #include <string>  
@@ -161,7 +166,7 @@ string Warrior::names[WARRIOR_NUM] = { "dragon","ninja","iceman","lion","wolf" }
 class Headquarter;//需要先对Headquarter类进行声明，Warroir类中才可以使用
 class Warrior
 {
-private:	
+private:
 	int kindNo; //武士的种类编号 0 dragon 1 ninja 2 iceman 3 lion 4 wolf  
 	int no;//武士的编号
 protected:
@@ -171,8 +176,7 @@ public:
 	static string weapons[WEAPON_NUM];//静态成员变量，储存各类武器的名称
 	static int initialLifeValue[WARRIOR_NUM];//静态成员变量，储存各类武士的初始生命值
 	Warrior(Headquarter * p, int no_, int kindNo_);//构造函数
-	void PrintResult(int nTime);
-	void virtual PrintSelf(int nTime) {};
+	void virtual PrintSelf(int nTime);
 };
 
 class Headquarter
@@ -209,8 +213,8 @@ public:
 		morale = (float)pHeadquarter->totalLifeValue / initialLifeValue[kindNo_];
 	}
 	void PrintSelf(int nTime) {
-		Warrior::PrintResult(nTime);//先调用基类的输出函数
-		cout << "It has a " << weapons[weaponNo] << ",and it's morale is " 
+		Warrior::PrintSelf(nTime);//先调用基类的输出函数
+		cout << "It has a " << weapons[weaponNo] << ",and it's morale is "
 			<< fixed << setprecision(2) << morale << endl;
 	}
 };
@@ -224,7 +228,7 @@ public:
 		weapon2No = (no_ + 1) % 3;
 	}
 	void PrintSelf(int nTime) {
-		Warrior::PrintResult(nTime);//先调用基类的输出函数
+		Warrior::PrintSelf(nTime);//先调用基类的输出函数
 		cout << "It has a " << weapons[weapon1No] << " and a " << weapons[weapon2No] << endl;
 	}
 };
@@ -236,7 +240,7 @@ public:
 		weaponNo = no_ % 3;
 	}
 	void PrintSelf(int nTime) {
-		Warrior::PrintResult(nTime);//先调用基类的输出函数
+		Warrior::PrintSelf(nTime);//先调用基类的输出函数
 		cout << "It has a " << weapons[weaponNo] << endl;
 	}
 };
@@ -248,7 +252,7 @@ public:
 		loyalty = pHeadquarter->totalLifeValue;
 	}
 	void PrintSelf(int nTime) {
-		Warrior::PrintResult(nTime);//先调用基类的输出函数
+		Warrior::PrintSelf(nTime);//先调用基类的输出函数
 		cout << "It's loyalty is " << loyalty << endl;
 	}
 };
@@ -257,9 +261,7 @@ public:
 	Wolf(Headquarter * p, int no_, int kindNo_) :Warrior(p, no_, kindNo_) {
 		//Wolf类与基类完全相同
 	}
-	void PrintSelf(int nTime) {
-		Warrior::PrintResult(nTime);//先调用基类的输出函数
-	}
+	//不重载PrintSelf,将会调用基类的PrintSelf函数
 };
 
 /*
@@ -272,7 +274,7 @@ Warrior::Warrior(Headquarter *p, int no_, int kindNo_) {
 	pHeadquarter = p;
 }
 
-void Warrior::PrintResult(int nTime) {
+void Warrior::PrintSelf(int nTime) {
 	//print birth info of this warrior
 	cout << setw(3) << setfill('0') << nTime << ' ' << pHeadquarter->GetColor()
 		<< ' ' << names[kindNo] << ' ' << nTime + 1 << " born with strength "
@@ -309,7 +311,7 @@ int Headquarter::Produce(int nTime) {
 		//搜索小于武士种类数量且司令部生命元不足以制造该类武士时，便继续循环搜索
 		curMakingSeqIdx = (curMakingSeqIdx + 1) % WARRIOR_NUM;//使curMakingSeqIdx在0到WARRIOR_NUM反复循环，斯国一！
 		searchingTimes++;//每循环一次表示搜索次数增加一次，遍历完WARRIOR_NUM种武士即终止循环
-	} ;
+	};
 	int kindNo = makingSeq[color][curMakingSeqIdx];//确定将要制造的武士种类
 	curMakingSeqIdx = (curMakingSeqIdx + 1) % WARRIOR_NUM;
 	if(Warrior::initialLifeValue[kindNo] > totalLifeValue) {
@@ -320,15 +322,15 @@ int Headquarter::Produce(int nTime) {
 	}
 	//制造武士
 	totalLifeValue -= Warrior::initialLifeValue[kindNo];//司令部生命元相应减少
-	if(0 == kindNo) 
+	if(0 == kindNo)
 		pWarriors[totalWarriorNum] = new Dragon(this, totalWarriorNum + 1, kindNo);//制造一个Dragon
 	else if(1 == kindNo)
 		pWarriors[totalWarriorNum] = new Ninja(this, totalWarriorNum + 1, kindNo);//制造一个Ninja
-	else if(2 == kindNo) 
+	else if(2 == kindNo)
 		pWarriors[totalWarriorNum] = new Iceman(this, totalWarriorNum + 1, kindNo);//制造一个Iceman
-	else if(3 == kindNo) 
+	else if(3 == kindNo)
 		pWarriors[totalWarriorNum] = new Lion(this, totalWarriorNum + 1, kindNo);//制造一个Lion
-	else 
+	else
 		pWarriors[totalWarriorNum] = new Wolf(this, totalWarriorNum + 1, kindNo);//制造一个Wolf
 	warriorNum[kindNo]++;//司令部中该类武士的数量增加1
 	pWarriors[totalWarriorNum]->PrintSelf(nTime);
