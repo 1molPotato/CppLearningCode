@@ -5,7 +5,7 @@ The brackets must close in the correct order, "()" and "()[]{}" are all valid bu
 */
 
 /*
-看到难度是easy自信地点进来然后发现又是一脸懵逼，关键是我前段时间还做过括号匹配的题
+看到难度是easy自信地点进来然后又是一脸懵逼，关键是我前段时间还做过括号匹配的题
 先马，今晚回去搞定
 */
 
