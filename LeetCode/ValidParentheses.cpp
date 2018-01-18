@@ -21,7 +21,7 @@ bool isValid(string s) {
 		// find a series of sub strings composing s, where each sub string is valid
 		bool result = false;
 		for(int i = 2; i <= len / 2; ++i) {
-
+			//搞不定啊搞不定啊
 		}
 	}
 }
@@ -109,24 +109,24 @@ bool isValid(string s) {
 
 bool isValid(string s) {
 	if(1 == s.size() % 2)
-		return false;
-	stack<char> stk;
+		return false;// 括号匹配的字串长度不可能是奇数
+	stack<char> stk;// 栈作为容器
 	for(char &c : s) {
 		if(c == '(' || c == '{' || c == '[') {
-			stk.push(c);
+			stk.push(c);// 遇左括号则入栈
 		} else {
 			if(stk.empty()) {
-				return false;
+				return false;// 右括号先出现则返回false
 			} else {
 				char top = stk.top();
 				if((c == ')' && top != '(') || (c == '}' && top != '{')
 					|| (c == ']' && top != '[')) {
-					return false;
+					return false;// 右括号与栈顶元素不匹配则返回false
 				}
-				stk.pop();
+				stk.pop();// 栈顶弹出
 			}
 		}
 	}
-	return stk.empty();
+	return stk.empty();// 栈为空则说明匹配成功
 }
 
