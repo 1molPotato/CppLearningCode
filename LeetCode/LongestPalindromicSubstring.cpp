@@ -56,7 +56,7 @@ string longestPalindrome(string s) {
 	return ls;
 }
 
-// 然后对比之后发现还是写得太丑了，整改如下，最终AC的Runtime为16ms
+// 和"别人的代码"对比之后发现还是写得太丑了，整改如下，最终AC的Runtime为16ms，一高兴提交了三次
 
 string longestPalindrome(string s) {
 	int start = 0, len_ls = 0;
