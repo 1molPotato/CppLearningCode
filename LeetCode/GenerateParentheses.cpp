@@ -69,4 +69,43 @@ ans = {"((((", "((()", "(()(", "(())", "()((", "()()", "())(",
 	"()))", ")(((", ")(()", ")()(", ")())", "))((", "))()", ")))(", "))))"}
 */
 
+/*
+对于本道题,上述做法的开销是不必要的
+首先,显然n对括号组成的字符串并不是2^(2n)种情况,而只有组合数C(2n,n)种情况,
+在枚举的过程中判定是否满足括号匹配的原则,则情况将更少一些
+因此可采用回溯法(backtracking)解这道题
+*/
+
+void backtracking(vector<string>&, int, int, string&);//declare prototype
+vector<string> generateParenthesis(int n){
+	vector<string> ans;
+	if(n < 1)
+		return ans;
+	string current(2 * n, ' ');
+	backtracking(ans, 0, 0, current);
+	return ans;
+}
+
+void backtracking(vector<string> &ans, int left, int right, string &current){
+	//left,字符串中已有'('的数目
+	//right,字符串中已有')'的数目
+	int n = current.size() / 2;
+	if(left == n && right == n){
+		ans.push_back(current);
+		return;
+	}
+    if(left > right){
+		//current中'('数量大于')'的数量,则加上')'并进入下一层递归
+        backtracking(ans, left, right + 1, current + ')', n);
+    }
+    if(left < n){
+		//current中'('数量小于n,则加上'('并进入下一层递归
+        backtracking(ans, left + 1, right, current + '(', n);
+    }
+}
+
+/*
+回溯仍然是暴力搜索法的一种,接下来学习DP——动态规划解法(怎么哪儿都有你)
+*/
+
 
