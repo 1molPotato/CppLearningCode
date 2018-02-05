@@ -76,6 +76,7 @@ ans = {"((((", "((()", "(()(", "(())", "()((", "()()", "())(",
 因此可采用回溯法(backtracking)解这道题
 */
 
+//backtracking method
 void backtracking(vector<string>&, int, int, string&);//declare prototype
 vector<string> generateParenthesis(int n){
 	vector<string> ans;
@@ -107,5 +108,37 @@ void backtracking(vector<string> &ans, int left, int right, string &current){
 /*
 回溯仍然是暴力搜索法的一种,接下来学习DP——动态规划解法(怎么哪儿都有你)
 */
+
+/*
+DP(Dynamic Programming),也即动态规划,其核心在于状态的定义和状态转移方程的定义
+1.状态的定义
+dp[n]为n对括号的所有满足要求的组合
+显然有dp[0] = {""}, dp[1] = {"()"}
+2.状态转移方程的定义
+对dp[i], 1 <= i <= n, 有:
+dp[i] = '(' + dp[j] + ')' + dp[i - j - 1], 0 <= j < i
+故只要已经求解了dp[k], k < i, 那么dp[i]即可通过上面的方程得到
+已知dp[0] = {""}, 于是便可以迭代求解得到dp[n]
+*/
+
+//dynamic programming method
+vector<string> generateParenthesis(int n) {
+	vector<string> empty;
+	vector<vector<string>> dp(n + 1, empty);
+	dp[0].push_back("");
+	for(int i = 1; i <= n; ++i) {
+		for(int j = 0; j < i; ++j) {
+			for(string s1 : dp[j]) {
+				for(string s2 : dp[i - j - 1]) {
+					dp[i].push_back("(" + s1 + ")" + s2);
+				}
+			}
+		}
+	}
+	return dp[n];
+}
+
+//两种方法的时间复杂度都是O(4^n/sqrt(n)), 调试n > 10时运行时间已经明显较长, 指数时间复杂度相当恐怖!
+
 
 
