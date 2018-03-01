@@ -117,7 +117,7 @@ private:
 			res.push_back(combination); //搜索到达满足条件的叶节点,将解添加到解集中
 			return;
 		}
-		//保持解集中的元素按升序排列,避免重复解并且减少搜索数目
+		//保持解集中的元素按升序排列,避免重复解并且减少搜索次数
 		for(int i = begin; i != candidates.size() && target >= candidates[i]; ++i) {
 			combination.push_back(candidates[i]); //更新该层节点的临时解
 			combinationSum(candidates, target - candidates[i], res, combination, i); //递归搜索子节点
