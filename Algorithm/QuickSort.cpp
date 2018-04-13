@@ -32,11 +32,12 @@ vector<T> quick_sort(vector<T> &arr) {
 // end of quick sort algorithm, non-in-place version, by myself
 
 // start of quick sort algorithm, in-place version, by myself
+// 看了半天基准选取对时间复杂度的影响,没太看懂,大概意思就是随机选也不会差到哪儿去,所以直接把末尾的值作为基准
 template<typename T>
-int partition(T arr[], int left, int right, int pivotIndex) {
-	T pivotValue = arr[pivotIndex];
-	swap(arr[pivotIndex], arr[right]); // move pivot to the tail
-	int storeIndex = left; // stored as pivotIndex to return
+int partition(T arr[], int left, int right) {
+	T pivotValue = arr[right];
+	// swap(arr[pivotIndex], arr[right]); // move pivot to the tail , 这一步就省掉了
+	int storeIndex = left; // stored as pivotIndex to return at the end of this function
 	for(int i = left; i < right; ++i) {
 		// move element less than pivot to the left(not in order)
 		if(arr[i] <= pivotValue) swap(arr[storeIndex++], arr[i]);
@@ -49,13 +50,13 @@ template<typename T>
 void quick_sort(T arr[], int left, int right) {
 	if(right > left) {
 		// if right <= left, only 0 or 1 element, no need to sort
-		int pivotIndex = (right + left) / 2; // still don't know how to choose pivot
-		int pivotNewIndex = partition(arr, left, right, pivotIndex);
-		quick_sort(arr, left, pivotNewIndex - 1); // recursively call quick_sort for left part
-		quick_sort(arr, pivotNewIndex + 1, right); // similarly, for right part
+		// int pivotIndex = (right + left) / 2;  still don't know how to choose pivot		
+		int pivotIndex = partition(arr, left, right);
+		quick_sort(arr, left, pivotIndex - 1); // recursively call quick_sort for left part
+		quick_sort(arr, pivotIndex + 1, right); // similarly, for right part
 	}
 }
 // end of quick sort algorithm, in-place version, by myself
 
-// 原地版本, 但是pivot的选取仍未做考虑, 接下来看看wiki上的标准实现方法
+
 
