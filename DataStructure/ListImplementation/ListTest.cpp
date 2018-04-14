@@ -1,3 +1,10 @@
+/*
+自己实现了一个单向链表
+采用了指向链表头的头节点,方便维护数据
+下面的测试程序测试了在任意位置插入或删除链表中的节点,用一组随机值初始化一定数量的节点,翻转链表(明天写)
+关注到了内存的动态分配和销毁
+*/
+
 #include <iostream>
 #include <ctime>
 #include "List.h" // List class definition
