@@ -95,14 +95,14 @@ void backtracking(vector<string> &ans, int left, int right, string &current){
 		ans.push_back(current);
 		return;
 	}
-    if(left > right){
+	if(left > right){
 		//current中'('数量大于')'的数量,则加上')'并进入下一层递归
-        backtracking(ans, left, right + 1, current + ')', n);
-    }
-    if(left < n){
+	backtracking(ans, left, right + 1, current + ')', n);
+	}
+	if(left < n){
 		//current中'('数量小于n,则加上'('并进入下一层递归
-        backtracking(ans, left + 1, right, current + '(', n);
-    }
+	backtracking(ans, left + 1, right, current + '(', n);
+	}
 }
 
 /*
